@@ -6,17 +6,15 @@ import re
 import shutil
 import sys
 import tempfile
+from pathlib import Path
 from subprocess import Popen
 
 import jinja2
-
-from six import string_types, binary_type
-
+from six import binary_type, string_types
 from six.moves import configparser
-from . import macro as macro_module
-from . import utils
+
+from . import __version__, macro as macro_module, utils
 from .parser import Parser
-from . import __version__
 
 BASE_DIR = os.path.dirname(__file__)
 THEMES_DIR = os.path.join(BASE_DIR, 'themes')
@@ -247,7 +245,7 @@ class Generator(object):
             source = os.path.normpath(os.path.join(work_dir, source))
             if os.path.isdir(source):
                 self.log(u"Entering %r" % source)
-                entries = os.listdir(source)
+                entries = [str(p) for p in Path(source).glob('*.md')]
                 entries.sort()
                 for entry in entries:
                     slides.extend(self.fetch_contents(entry, source))
